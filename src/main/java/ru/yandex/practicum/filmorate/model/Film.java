@@ -21,8 +21,7 @@ public class Film extends BaseUnit {
     @NotBlank
     @NotEmpty
     private String name;
-    @Size(max = 200)
-    @Min(1)
+    @Size(max = 200, min = 1)
     private String description;
     @NonNull
     private LocalDate releaseDate;
