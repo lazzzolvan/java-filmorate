@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
-public class User extends BaseUnit{
+public class User extends BaseUnit {
 
     @Email
     @NotEmpty

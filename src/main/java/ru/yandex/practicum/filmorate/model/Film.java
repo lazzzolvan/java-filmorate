@@ -16,15 +16,15 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
-public class Film extends BaseUnit{
+public class Film extends BaseUnit {
 
-@NotBlank
-@NotEmpty
+    @NotBlank
+    @NotEmpty
     private String name;
-@Size(max = 200)
+    @Size(max = 200)
     private String description;
-@NonNull
+    @NonNull
     private LocalDate releaseDate;
-@Min(1)
+    @Min(1)
     private int duration;
 }

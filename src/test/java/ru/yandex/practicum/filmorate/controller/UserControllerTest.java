@@ -27,7 +27,7 @@ class UserControllerTest {
                 .name("Name")
                 .email("email@email.com")
                 .login("login")
-                .birthday(LocalDate.of(1995,3,1))
+                .birthday(LocalDate.of(1995, 3, 1))
                 .build();
         userController.validate(user);
     }
@@ -38,7 +38,7 @@ class UserControllerTest {
                 .name("")
                 .email("email@email.com")
                 .login("login")
-                .birthday(LocalDate.of(1995,3,1))
+                .birthday(LocalDate.of(1995, 3, 1))
                 .build();
 
         userController.validate(user);

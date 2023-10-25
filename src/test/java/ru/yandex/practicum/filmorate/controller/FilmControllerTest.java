@@ -24,7 +24,7 @@ class FilmControllerTest {
         film = Film.builder()
                 .name("Name")
                 .description("Decription")
-                .releaseDate(LocalDate.of(1800,1,1))
+                .releaseDate(LocalDate.of(1800, 1, 1))
                 .duration(100)
                 .build();
 
