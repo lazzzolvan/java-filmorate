@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseController <T extends BaseUnit>{
+public abstract class BaseController<T extends BaseUnit> {
     private final Map<Long, T> storage = new HashMap<>();
     private long generateID;
 
