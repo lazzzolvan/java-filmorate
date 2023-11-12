@@ -59,7 +59,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return filmStorage.get(id);
     }
 
-    private void validate(Film data) {
+    public void validate(Film data) {
         if (data.getReleaseDate().isBefore(START_RELEASE_DATE)) {
             throw new ValidationException("Film release data is invalid");
         }

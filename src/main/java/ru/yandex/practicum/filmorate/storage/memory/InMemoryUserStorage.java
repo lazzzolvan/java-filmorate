@@ -56,7 +56,7 @@ public class InMemoryUserStorage implements UserStorage {
         return userStorage.get(id);
     }
 
-    private void validate(User user) {
+    public void validate(User user) {
         if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
