@@ -27,6 +27,12 @@ public class User extends BaseUnit {
     private LocalDate birthday;
     private Set<Long> friends;
 
+    public Set<Long> getFriends() {
+        if (friends == null) {
+            friends = new HashSet<>();
+        }
+        return friends;
+    }
 
     public void addFriends(Long id) {
         if (friends == null)
