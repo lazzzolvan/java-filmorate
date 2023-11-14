@@ -52,21 +52,20 @@ public class FilmService {
     }
 
     public boolean addLikeFilm(Long filmID, Long userId) {
-        if (filmStorage.get(filmID) != null && userStorage.get(userId) != null) {
+        if (userStorage.get(userId) != null) {
             filmStorage.get(filmID).addLike(userId);
-
             return true;
         } else {
-            throw new DataNotFoundException("Данный пользователь или фильм не были найдены");
+            throw new DataNotFoundException("Данный пользователь не найден");
         }
     }
 
     public boolean removeLikeFilm(Long filmId, Long userId) {
-        if (filmStorage.get(filmId) != null && userStorage.get(userId) != null) {
-            filmStorage.get(filmId).getUsersByLike().remove(userId);
-            return true;
+        if (userStorage.get(userId) != null) {
+        filmStorage.get(filmId).getUsersByLike().remove(userId);
+        return true;
         } else {
-            throw new DataNotFoundException("Данный пользователь или фильм не были найдены");
+            throw new DataNotFoundException("Данный пользователь не найден");
         }
     }
 

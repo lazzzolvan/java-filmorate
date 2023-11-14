@@ -2,13 +2,11 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.memory.InMemoryUserStorage;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,22 +54,16 @@ public class UserService {
     }
 
     public List<User> getFriendsByUser(Long userId) {
-        return Optional.ofNullable(userStorage.get(userId))
-                .map(user -> user.getFriends().stream()
-                        .map(userStorage::get)
-                        .collect(Collectors.toList()))
-                .orElseThrow(() -> new DataNotFoundException("Данный пользователь не найден"));
+        return userStorage.get(userId).getFriends().stream()
+                .map(userStorage::get)
+                .collect(Collectors.toList());
     }
 
-
     public List<User> getMutualFriends(Long currentUserId, Long otherUserId) {
-        return Optional.ofNullable(userStorage.get(currentUserId))
-                .flatMap(currentUser -> Optional.ofNullable(userStorage.get(otherUserId))
-                        .map(otherUser -> currentUser.getFriends().stream()
-                                .filter(otherUser.getFriends()::contains)
-                                .map(userStorage::get)
-                                .collect(Collectors.toList())))
-                .orElseThrow(() -> new DataNotFoundException("Данные пользователи не найдены"));
+        return userStorage.get(currentUserId).getFriends().stream()
+                .filter(friendId -> userStorage.get(otherUserId).getFriends().contains(friendId))
+                .map(userStorage::get)
+                .collect(Collectors.toList());
     }
 
     public void validate(User user) {
@@ -79,5 +71,6 @@ public class UserService {
             user.setName(user.getLogin());
         }
     }
+
 
 }
