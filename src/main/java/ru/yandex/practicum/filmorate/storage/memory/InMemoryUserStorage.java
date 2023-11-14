@@ -18,7 +18,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        validate(user);
         user.setId(++generateID);
         userStorage.put(user.getId(), user);
         return user;
@@ -34,7 +33,6 @@ public class InMemoryUserStorage implements UserStorage {
         if (!userStorage.containsKey(user.getId())) {
             throw new DataNotFoundException(String.format("User %s not found", user));
         }
-        validate(user);
         userStorage.put(user.getId(), user);
         return user;
     }
@@ -56,9 +54,4 @@ public class InMemoryUserStorage implements UserStorage {
         return userStorage.get(id);
     }
 
-    public void validate(User user) {
-        if (user.getName() == null || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
-    }
 }

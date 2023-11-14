@@ -7,8 +7,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.memory.InMemoryUserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -20,56 +21,63 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
+    public User create(User user) {
+        validate(user);
+        return userStorage.create(user);
+    }
+
+    public User update(User user) {
+        validate(user);
+        return userStorage.update(user);
+    }
+
+    public boolean remove(User user) {
+        return userStorage.remove(user);
+    }
+
+    public User get(Long id) {
+        return userStorage.get(id);
+    }
+
+    public List<User> getAll() {
+        return userStorage.getAll();
+    }
+
     public boolean addFriends(Long currentUserId, Long userFriendsId) {
-        if (userStorage.get(currentUserId) != null && userStorage.get(userFriendsId) != null) {
-            userStorage.get(currentUserId).addFriends(userFriendsId);
-            userStorage.get(userFriendsId).addFriends(currentUserId);
-            return true;
-        } else {
-            throw new DataNotFoundException("Не найден данный пользователь или пользователь к которому вы " +
-                    "хотите добавиться в друзья");
-        }
+        userStorage.get(currentUserId).addFriends(userFriendsId);
+        userStorage.get(userFriendsId).addFriends(currentUserId);
+        return true;
     }
 
     public boolean removeFriends(Long currentUserId, Long userFriendsId) {
-        if (userStorage.get(currentUserId) != null && userStorage.get(userFriendsId) != null) {
-            userStorage.get(currentUserId).getFriends().remove(userFriendsId);
-            userStorage.get(userFriendsId).getFriends().remove(currentUserId);
-            return true;
-        } else {
-            throw new DataNotFoundException("Не найден данный пользователь или пользователь которого вы " +
-                    "хотите удалить из друзей");
-        }
+        userStorage.get(currentUserId).getFriends().remove(userFriendsId);
+        userStorage.get(userFriendsId).getFriends().remove(currentUserId);
+        return true;
     }
 
     public List<User> getFriendsByUser(Long userId) {
-        if (userStorage.get(userId) != null) {
-            List<User> friendsByUser = new ArrayList<>();
-            for (Long friend : userStorage.get(userId).getFriends()) {
-                friendsByUser.add(userStorage.get(friend));
-            }
-            return friendsByUser;
-        } else {
-            throw new DataNotFoundException("Данный пользователь не найден");
-        }
+        return Optional.ofNullable(userStorage.get(userId))
+                .map(user -> user.getFriends().stream()
+                        .map(userStorage::get)
+                        .collect(Collectors.toList()))
+                .orElseThrow(() -> new DataNotFoundException("Данный пользователь не найден"));
     }
+
 
     public List<User> getMutualFriends(Long currentUserId, Long otherUserId) {
-        if (userStorage.get(currentUserId) != null && userStorage.get(otherUserId) != null) {
-            List<User> mutualFriends = new ArrayList<>();
-            if (userStorage.get(currentUserId).getFriends() == null || userStorage.get(otherUserId).getFriends() == null) {
-                return mutualFriends;
-            }
-            for (Long friend : userStorage.get(currentUserId).getFriends()) {
-                if (userStorage.get(otherUserId).getFriends().contains(friend)) {
-                    mutualFriends.add(userStorage.get(friend));
-                }
-            }
-            return mutualFriends;
-        } else {
-            throw new DataNotFoundException("Данные пользователи не найдены");
-        }
+        return Optional.ofNullable(userStorage.get(currentUserId))
+                .flatMap(currentUser -> Optional.ofNullable(userStorage.get(otherUserId))
+                        .map(otherUser -> currentUser.getFriends().stream()
+                                .filter(otherUser.getFriends()::contains)
+                                .map(userStorage::get)
+                                .collect(Collectors.toList())))
+                .orElseThrow(() -> new DataNotFoundException("Данные пользователи не найдены"));
     }
 
+    public void validate(User user) {
+        if (user.getName() == null || user.getName().isEmpty()) {
+            user.setName(user.getLogin());
+        }
+    }
 
 }

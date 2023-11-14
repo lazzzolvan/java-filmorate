@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class User extends BaseUnit {
 
     @Email

@@ -5,25 +5,33 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.memory.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.memory.InMemoryUserStorage;
 
 import java.time.LocalDate;
 
 
-class InMemoryFilmStorageTest {
+class FillmServiceTest {
     Film film;
-    InMemoryFilmStorage inMemoryFilmStorage;
+    FilmService filmService;
+    UserStorage userStorage;
+    FilmStorage filmStorage;
 
     @BeforeEach
     void setUp() {
-        inMemoryFilmStorage = new InMemoryFilmStorage();
+        userStorage = new InMemoryUserStorage();
+        filmStorage = new InMemoryFilmStorage();
+        filmService = new FilmService((InMemoryFilmStorage) filmStorage, (InMemoryUserStorage) userStorage);
     }
 
     @Test
     void validateNegative() {
         film = Film.builder().name("Name").description("Decription").releaseDate(LocalDate.of(1800, 1, 1)).duration(100).build();
 
-        Assertions.assertThrows(ValidationException.class, () -> inMemoryFilmStorage.validate(film));
+        Assertions.assertThrows(ValidationException.class, () -> filmService.validate(film));
     }
 
 
@@ -31,6 +39,6 @@ class InMemoryFilmStorageTest {
     void validate() {
         film = Film.builder().name("Name").description("Decription").releaseDate(LocalDate.of(2000, 1, 1)).duration(100).build();
 
-        inMemoryFilmStorage.validate(film);
+        filmService.validate(film);
     }
 }
