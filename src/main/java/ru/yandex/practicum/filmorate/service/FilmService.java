@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -52,21 +51,15 @@ public class FilmService {
     }
 
     public boolean addLikeFilm(Long filmID, Long userId) {
-        if (userStorage.get(userId) != null) {
-            filmStorage.get(filmID).addLike(userId);
-            return true;
-        } else {
-            throw new DataNotFoundException("Данный пользователь не найден");
-        }
+        userStorage.get(userId);
+        filmStorage.get(filmID).addLike(userId);
+        return true;
     }
 
     public boolean removeLikeFilm(Long filmId, Long userId) {
-        if (userStorage.get(userId) != null) {
+        userStorage.get(userId);
         filmStorage.get(filmId).getUsersByLike().remove(userId);
         return true;
-        } else {
-            throw new DataNotFoundException("Данный пользователь не найден");
-        }
     }
 
     public List<Film> getFirstCountFilms(Long count) {
