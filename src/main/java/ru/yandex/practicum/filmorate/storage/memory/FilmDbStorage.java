@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,11 +22,9 @@ import static ru.yandex.practicum.filmorate.storage.memory.MpaDbStorage.createMp
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final MpaStorage mpaStorage;
-
     @Override
     public Film create(Film film) {
-/*        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("FILMS")
                 .usingGeneratedKeyColumns("id");
 
@@ -41,28 +39,44 @@ public class FilmDbStorage implements FilmStorage {
         Number generatedId = simpleJdbcInsert.executeAndReturnKey(parameters);
 
 
-        film.setId(generatedId.longValue());*/
+        film.setId(generatedId.longValue());
         return film;
     }
 
     @Override
     public List<Film> getAll() {
-        return null;
+        String sqlQuery = "select * from FILMS";
+        return jdbcTemplate.query(sqlQuery, FilmDbStorage::createFilm);
     }
 
     @Override
     public Film update(Film film) {
-        return null;
+        String sqlQuery = "update FILMS\n" +
+                "set name = ?, release_date = ?, description = ?, duration = ?, rate = ?, mpa_id = ?\n" +
+                "where id = ?";
+        int update = jdbcTemplate.update(sqlQuery, film.getName(), film.getReleaseDate(), film.getDescription(), film.getDuration(),
+                film.getRate(), film.getMpa().getId(), film.getId());
+        if (update != 1)
+            throw new DataNotFoundException(String.format("film with id %s not single", film.getId()));
+        return film;
     }
 
     @Override
     public boolean remove(Film film) {
-        return false;
+        String sqlQuery = "delete from FILMS where id = ?";
+        int update = jdbcTemplate.update(sqlQuery, film.getId());
+        if (update != 1)
+            throw new DataNotFoundException(String.format("film with id %s not single", film.getId()));
+        return true;
     }
 
     @Override
     public Film get(Long id) {
-        return null;
+        String sqlQuery = "select * from FILMS where id = ?";
+        List<Film> films = jdbcTemplate.query(sqlQuery, FilmDbStorage::createFilm);
+        if (films.size() != 1)
+            throw new DataNotFoundException(String.format("film with id %s not single", id));
+        return films.get(0);
     }
 
     static Film createFilm(ResultSet rs, int rowNum) throws SQLException {
@@ -70,7 +84,7 @@ public class FilmDbStorage implements FilmStorage {
         return Film.builder()
                 .id(rs.getLong("id"))
                 .name(rs.getString("name"))
-                .description(rs.getString("decription"))
+                .description(rs.getString("description"))
                 .releaseDate(rs.getDate("release_date").toLocalDate())
                 .rate(rs.getInt("rate"))
                 .duration(rs.getInt("duration"))

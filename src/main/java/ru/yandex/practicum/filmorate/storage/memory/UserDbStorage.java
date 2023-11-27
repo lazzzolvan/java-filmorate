@@ -59,7 +59,7 @@ public class UserDbStorage implements UserStorage {
     public boolean remove(User user) {
         String sqlQuery = "delete from USERS where id = ?";
         int update = jdbcTemplate.update(sqlQuery, user.getId());
-        if (update == 0)
+        if (update != 1)
             throw new DataNotFoundException(String.format("user with id %s not single", user.getId()));
         return true;
     }

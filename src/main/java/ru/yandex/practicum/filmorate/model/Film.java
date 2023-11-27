@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -16,6 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Film extends BaseUnit {
 
     @NotBlank
@@ -30,7 +30,6 @@ public class Film extends BaseUnit {
     private int duration;
     private boolean deleted;
     private Set<Long> usersByLike;
-    @NonNull
     private Mpa mpa;
     @Builder.Default
     private Set<Genre> genres = new HashSet<>() ;
