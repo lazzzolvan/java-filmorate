@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -22,9 +24,16 @@ public class Film extends BaseUnit {
     private String description;
     @NonNull
     private LocalDate releaseDate;
+    @JsonIgnore
+    private int rate;
     @Min(1)
     private int duration;
+    private boolean deleted;
     private Set<Long> usersByLike;
+    @NonNull
+    private Mpa mpa;
+    @Builder.Default
+    private Set<Genre> genres = new HashSet<>() ;
 
     public void addLike(Long id) {
         if (usersByLike == null) {

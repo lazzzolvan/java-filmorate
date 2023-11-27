@@ -50,9 +50,9 @@ create table if not exists FRIENDS
 
 create table if not exists LIKES
 (
-    id      int not null primary key auto_increment,
     user_id int not null references USERS (id),
-    film_id int not null references FILMS (id)
+    film_id int not null references FILMS (id),
+    primary key (user_id, film_id)
 );
 
 
