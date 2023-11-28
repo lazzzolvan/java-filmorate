@@ -24,7 +24,6 @@ public class Film extends BaseUnit {
     private String description;
     @NonNull
     private LocalDate releaseDate;
-    @JsonIgnore
     private int rate;
     @Min(1)
     private int duration;
