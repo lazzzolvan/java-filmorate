@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -14,17 +16,20 @@ import ru.yandex.practicum.filmorate.storage.memory.InMemoryUserStorage;
 import java.time.LocalDate;
 
 
+@RequiredArgsConstructor
 class FillmServiceTest {
     Film film;
     FilmService filmService;
     UserStorage userStorage;
     FilmStorage filmStorage;
+    private final JdbcTemplate jdbcTemplate;
+
 
     @BeforeEach
     void setUp() {
         userStorage = new InMemoryUserStorage();
         filmStorage = new InMemoryFilmStorage();
-        filmService = new FilmService((InMemoryFilmStorage) filmStorage, (InMemoryUserStorage) userStorage, genreStorage, jdbcTemplate);
+        filmService = new FilmService((InMemoryFilmStorage) filmStorage, (InMemoryUserStorage) userStorage, jdbcTemplate);
     }
 
     @Test

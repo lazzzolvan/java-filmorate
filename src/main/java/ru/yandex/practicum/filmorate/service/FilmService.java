@@ -99,10 +99,6 @@ public class FilmService {
             films.add(get(Long.valueOf(currentId)));
         }
         return films;
-/*        return filmStorage.getAll().stream()
-                .sorted(Comparator.comparingInt(film -> -1 * film.getUsersByLike().size()))
-                .limit(count)
-                .collect(Collectors.toList());*/
     }
 
     public void validate(Film data) {
