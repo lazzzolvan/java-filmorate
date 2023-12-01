@@ -29,7 +29,7 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userStorage = new InMemoryUserStorage();
-        userService = new UserService((InMemoryUserStorage) userStorage, jdbcTemplate);
+        userService = new UserService(userStorage, jdbcTemplate);
     }
 
     @Test
@@ -38,7 +38,7 @@ class UserServiceTest {
                 .name("Name")
                 .email("email@email.com")
                 .login("login")
-                .birthday(LocalDate.of(1995, 3, 1))
+                .birthday(LocalDate.of(1995, 2, 1))
                 .build();
 
         userService.validate(user);

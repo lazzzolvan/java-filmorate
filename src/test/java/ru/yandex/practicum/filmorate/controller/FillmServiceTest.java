@@ -34,12 +34,12 @@ class FillmServiceTest {
     void setUp() {
         userStorage = new InMemoryUserStorage();
         filmStorage = new InMemoryFilmStorage();
-        filmService = new FilmService((InMemoryFilmStorage) filmStorage, (InMemoryUserStorage) userStorage, jdbcTemplate);
+        filmService = new FilmService(filmStorage, userStorage, jdbcTemplate);
     }
 
     @Test
     void validateNegative() {
-        film = Film.builder().name("Name").description("Decription").releaseDate(LocalDate.of(1800, 1, 1)).duration(100).build();
+        film = Film.builder().name("Name").description("Decription").releaseDate(LocalDate.of(1800, 1, 1)).duration(110).build();
 
         Assertions.assertThrows(ValidationException.class, () -> filmService.validate(film));
     }
