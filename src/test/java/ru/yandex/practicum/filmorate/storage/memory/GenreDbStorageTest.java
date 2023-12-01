@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.memory;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -16,13 +17,25 @@ import static org.junit.jupiter.api.Assertions.*;
 class GenreDbStorageTest {
 
     private final JdbcTemplate jdbcTemplate;
-    private final GenreDbStorage genreDbStorage = new GenreDbStorage(jdbcTemplate);
+    private GenreDbStorage genreDbStorage;
+
+    @BeforeEach
+    void setUp() {
+        genreDbStorage = new GenreDbStorage(jdbcTemplate);
+    }
 
     @Test
-     public void getAll() {
+    public void getAll() {
         List<Genre> genres = genreDbStorage.getAll();
 
         assertNotNull(genres);
+    }
+
+    @Test
+    public void getById() {
+        Genre genre = genreDbStorage.get(2L);
+
+        assertNotNull(genre);
     }
 
 }
