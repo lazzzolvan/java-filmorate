@@ -38,11 +38,4 @@ public class Film extends BaseUnit {
         }
         usersByLike.add(id);
     }
-
-    public Set<Long> getUsersByLike() {
-        if (usersByLike == null) {
-            usersByLike = new HashSet<>();
-        }
-        return usersByLike;
-    }
 }

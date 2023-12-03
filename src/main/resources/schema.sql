@@ -1,25 +1,23 @@
 create table if not exists USERS
 (
     id       int          not null primary key auto_increment,
-    email    varchar(255) not null,
-    login    varchar(255) not null,
-    name     varchar(255),
+    email    varchar(255) not null unique,
+    login    varchar(255) not null unique,
+    name     varchar(255) not null,
     birthday date,
-    deleted  bool default false,
-    UNIQUE (email),
-    UNIQUE (login)
+    deleted  bool default false
 );
 
 create table if not exists GENRES
 (
-    id   int not null primary key auto_increment,
-    name varchar(255)
+    id   int          not null primary key auto_increment,
+    name varchar(255) not null
 );
 
 create table if not exists MPA
 (
-    id   int not null primary key auto_increment,
-    name varchar(255)
+    id   int          not null primary key auto_increment,
+    name varchar(255) not null
 );
 
 create table if not exists FILMS

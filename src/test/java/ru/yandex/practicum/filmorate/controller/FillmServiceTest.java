@@ -12,9 +12,9 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.storage.memory.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.memory.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.memory.*;
 
 import java.time.LocalDate;
 
@@ -25,16 +25,18 @@ import java.time.LocalDate;
 class FillmServiceTest {
     Film film;
     FilmService filmService;
-    UserStorage userStorage;
     FilmStorage filmStorage;
+    LikeStorage likeStorage;
+    UserStorage userStorage;
     private final JdbcTemplate jdbcTemplate;
 
 
     @BeforeEach
     void setUp() {
-        userStorage = new InMemoryUserStorage();
-        filmStorage = new InMemoryFilmStorage();
-        filmService = new FilmService(filmStorage, userStorage, jdbcTemplate);
+        userStorage = new UserDbStorage(jdbcTemplate);
+        filmStorage = new FilmDbStorage(jdbcTemplate);
+        likeStorage = new LikeDbStorage(jdbcTemplate, userStorage, filmStorage);
+        filmService = new FilmService(filmStorage, likeStorage);
     }
 
     @Test

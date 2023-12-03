@@ -9,8 +9,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.storage.memory.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.memory.FriendDbStorage;
+import ru.yandex.practicum.filmorate.storage.memory.UserDbStorage;
 
 import java.time.LocalDate;
 
@@ -24,12 +26,15 @@ class UserServiceTest {
     User user;
     UserService userService;
     UserStorage userStorage;
+
     private final JdbcTemplate jdbcTemplate;
+    private FriendStorage friendStorage;
 
     @BeforeEach
     void setUp() {
-        userStorage = new InMemoryUserStorage();
-        userService = new UserService(userStorage, jdbcTemplate);
+        userStorage = new UserDbStorage(jdbcTemplate);
+        friendStorage = new FriendDbStorage(jdbcTemplate, userStorage);
+        userService = new UserService(userStorage, friendStorage);
     }
 
     @Test
