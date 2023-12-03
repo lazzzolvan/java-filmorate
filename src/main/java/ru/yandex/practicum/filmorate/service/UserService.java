@@ -1,22 +1,25 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.storage.memory.InMemoryUserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserStorage userStorage;
 
+    private final FriendStorage friendStorage;
+
     @Autowired
-    public UserService(InMemoryUserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, FriendStorage friendStorage) {
         this.userStorage = userStorage;
+        this.friendStorage = friendStorage;
     }
 
     public User create(User user) {
@@ -42,28 +45,19 @@ public class UserService {
     }
 
     public boolean addFriends(Long currentUserId, Long userFriendsId) {
-        userStorage.get(currentUserId).addFriends(userFriendsId);
-        userStorage.get(userFriendsId).addFriends(currentUserId);
-        return true;
+        return friendStorage.addFriends(currentUserId, userFriendsId);
     }
 
     public boolean removeFriends(Long currentUserId, Long userFriendsId) {
-        userStorage.get(currentUserId).getFriends().remove(userFriendsId);
-        userStorage.get(userFriendsId).getFriends().remove(currentUserId);
-        return true;
+        return friendStorage.removeFriends(currentUserId, userFriendsId);
     }
 
     public List<User> getFriendsByUser(Long userId) {
-        return userStorage.get(userId).getFriends().stream()
-                .map(userStorage::get)
-                .collect(Collectors.toList());
+        return friendStorage.getFriendsByUser(userId);
     }
 
     public List<User> getMutualFriends(Long currentUserId, Long otherUserId) {
-        return userStorage.get(currentUserId).getFriends().stream()
-                .filter(friendId -> userStorage.get(otherUserId).getFriends().contains(friendId))
-                .map(userStorage::get)
-                .collect(Collectors.toList());
+        return friendStorage.getMutualFriends(currentUserId, otherUserId);
     }
 
     public void validate(User user) {
@@ -71,6 +65,4 @@ public class UserService {
             user.setName(user.getLogin());
         }
     }
-
-
 }

@@ -14,6 +14,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Film extends BaseUnit {
 
     @NotBlank
@@ -22,21 +23,19 @@ public class Film extends BaseUnit {
     private String description;
     @NonNull
     private LocalDate releaseDate;
+    private int rate;
     @Min(1)
     private int duration;
+    private boolean deleted;
     private Set<Long> usersByLike;
+    private Mpa mpa;
+    @Builder.Default
+    private Set<Genre> genres = new HashSet<>();
 
     public void addLike(Long id) {
         if (usersByLike == null) {
             usersByLike = new HashSet<>();
         }
         usersByLike.add(id);
-    }
-
-    public Set<Long> getUsersByLike() {
-        if (usersByLike == null) {
-            usersByLike = new HashSet<>();
-        }
-        return usersByLike;
     }
 }

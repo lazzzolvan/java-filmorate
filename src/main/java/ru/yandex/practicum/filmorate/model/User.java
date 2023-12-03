@@ -25,6 +25,7 @@ public class User extends BaseUnit {
     private String name;
     @PastOrPresent
     private LocalDate birthday;
+    private boolean deleted;
     private Set<Long> friends;
 
     public Set<Long> getFriends() {
